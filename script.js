@@ -40,7 +40,7 @@ function openMessage(day) {
   if (!m) return;
 
   const firstMessageDate = new Date(arrival);
-  firstMessageDate.setDate(firstMessageDate.getDate() - 20); // 21 days total
+  firstMessageDate.setDate(firstMessageDate.getDate() - 21); // 21 days total
   const messageDate = new Date(firstMessageDate);
   messageDate.setDate(firstMessageDate.getDate() + (21 - day));
 
