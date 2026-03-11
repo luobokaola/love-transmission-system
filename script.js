@@ -39,6 +39,14 @@ function openMessage(day) {
   let m = messages[day];
   if (!m) return;
 
+  const firstMessageDate = new Date(arrival);
+  firstMessageDate.setDate(firstMessageDate.getDate() - 20); // 21 days total
+  const messageDate = new Date(firstMessageDate);
+  messageDate.setDate(firstMessageDate.getDate() + (21 - day));
+
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  const formattedDate = messageDate.toLocaleDateString("en-US", options);
+
   let imgHtml = m.img
     ? `<img src="${m.img}" alt="Day ${day}" style="max-width:100%; margin-bottom:15px;">`
     : "";
@@ -46,7 +54,7 @@ function openMessage(day) {
   document.getElementById("popupContent").innerHTML = `
 <pre>
 --------------------
-remaining: ${day}
+Date: ${formattedDate}
 --------------------
 </pre>
 
