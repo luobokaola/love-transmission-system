@@ -110,12 +110,21 @@ async function sendReply(day){
 function loadReplies(day){
   const repliesRef = collection(db,"days",String(day),"replies");
   onSnapshot(repliesRef,(snapshot)=>{
-    const list = document.getElementById("replyList"); list.innerHTML="";
+    const list = document.getElementById("replyList"); 
+    list.innerHTML="";
     snapshot.forEach(doc=>{
-      const r=doc.data(); let html="";
-      if(r.text){html+=`<p>${r.text}</p><small>${new Date(r.time).toLocaleString()}</small>`;}
-      if(r.audio){html+=`<audio controls><source src="${r.audio}"></audio><small>${new Date(r.time).toLocaleString()}</small>`;}
-      const div=document.createElement("div"); div.className="reply"; div.innerHTML=html;
+      const r = doc.data(); 
+      let html = "";
+      const timeOptions = { hour: '2-digit', minute: '2-digit' };
+      if(r.text){ 
+        html += `<p>${r.text}</p><small>${new Date(r.time).toLocaleDateString()} ${new Date(r.time).toLocaleTimeString([], timeOptions)}</small>`; 
+      }
+      if(r.audio){ 
+        html += `<audio controls><source src="${r.audio}"></audio><small>${new Date(r.time).toLocaleDateString()} ${new Date(r.time).toLocaleTimeString([], timeOptions)}</small>`; 
+      }
+      const div = document.createElement("div"); 
+      div.className = "reply"; 
+      div.innerHTML = html;
       list.appendChild(div);
     });
   });
