@@ -29,6 +29,8 @@ textarea{width:100%;max-width:95%;box-sizing:border-box;height:70px;font-family:
 
 #popup input[type="file"]{width:100%;box-sizing:border-box;padding:5px;border:2px solid black;background:#fffbe3;font-family:monospace;}
 
+#popupContent pre {text-align: center;margin: 10px 0;}
+
 #popup #sendReplyButton{padding:8px 16px;font-family:monospace;font-size:14px;border:2px solid black;background:#fffbe3;box-shadow:3px 3px 0 black;cursor:pointer;align-self:flex-start;margin-top:5px;}
 #popup #sendReplyButton:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 black;}
 
@@ -43,7 +45,6 @@ button{font-family:"Courier New",monospace;border:2px solid black;background:#ff
 
 #popupContent b{display:block;margin-top:10px;margin-bottom:5px;font-size:14px;}
 #popupContent audio{width:100%;margin-bottom:10px;}
-#popupContent pre {text-align: center;margin: 10px 0;}
 
 .hidden{display:none !important;}
 
