@@ -70,7 +70,7 @@ ${imgHtml}
 <b>ENGLISH</b><p>${m.en}</p>
 
 <div class="replySection">
-<h4>reply to rob</h4>
+<h4>reply to rob (he loves you the most)</h4>
 <textarea id="replyText"></textarea>
 <input type="file" id="replyFile">
 <button id="sendReplyButton" onclick="sendReply(${day})">send</button>
