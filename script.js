@@ -1,3 +1,19 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAgpVJlgArNzH1NpeiDPp2mYoD_WxVamN4",
+  authDomain: "love-transmission-system.firebaseapp.com",
+  projectId: "love-transmission-system",
+  storageBucket: "love-transmission-system.appspot.com",
+  messagingSenderId: "497546095508",
+  appId: "1:497546095508:web:a8c41ba1e33f572b13bd81",
+  measurementId: "G-Z8QJ67EERF"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const arrival = new Date("2026-04-01T11:40:00+08:00");
 
 const messages = {
@@ -15,49 +31,28 @@ const messages = {
   },
 };
 
-function daysRemaining() {
-  let now = new Date();
-  let diff = arrival - now;
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
-}
+function daysRemaining(){return Math.floor((arrival - new Date())/(1000*60*60*24));}
 
-function buildGrid() {
+function buildGrid(){
   const grid = document.getElementById("grid");
   const today = daysRemaining();
-
-  for (let i = 21; i >= 1; i--) {
-    let div = document.createElement("div");
+  for(let i=21;i>=1;i--){
+    let div=document.createElement("div");
     div.classList.add("day");
-    div.innerHTML = i;
-
-    if (i - 1 >= today) {
-      div.classList.add("unlocked");
-      div.onclick = () => openMessage(i);
-    } else {
-      div.classList.add("locked");
-    }
-
+    div.innerHTML=i;
+    if(i-1>=today){div.classList.add("unlocked"); div.onclick=()=>openMessage(i);}
+    else{div.classList.add("locked");}
     grid.appendChild(div);
   }
 }
 
-function openMessage(day) {
-  let m = messages[day];
-  if (!m) return;
-
-  const firstMessageDate = new Date(arrival);
-  firstMessageDate.setDate(firstMessageDate.getDate() - 21); // 21 days total
-  const messageDate = new Date(firstMessageDate);
-  messageDate.setDate(firstMessageDate.getDate() + (21 - day));
-
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = messageDate.toLocaleDateString("en-US", options);
-
-  let imgHtml = m.img
-    ? `<img src="${m.img}" alt="Day ${day}" style="max-width:100%; margin-bottom:15px;">`
-    : "";
-
-  document.getElementById("popupContent").innerHTML = `
+function openMessage(day){
+  let m = messages[day]; if(!m) return;
+  const firstMessageDate=new Date(arrival); firstMessageDate.setDate(firstMessageDate.getDate()-21);
+  const messageDate=new Date(firstMessageDate); messageDate.setDate(firstMessageDate.getDate()+(21-day));
+  const formattedDate=messageDate.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+  let imgHtml=m.img?`<img src="${m.img}">`:"";
+  document.getElementById("popupContent").innerHTML=`
 <pre>
 --------------------
 Date: ${formattedDate}
@@ -67,97 +62,89 @@ Date: ${formattedDate}
 ${imgHtml}
 
 <audio controls>
-  <source src="${m.audio}" type="audio/mp4">
+<source src="${m.audio}">
 </audio>
 
-<b>CZECH</b>
-<p>${m.cz}</p>
-
+<b>CZECH</b><p>${m.cz}</p>
 <hr>
+<b>ENGLISH</b><p>${m.en}</p>
 
-<b>ENGLISH</b>
-<p>${m.en}</p>
+<div class="replySection">
+<h4>reply to rob</h4>
+<textarea id="replyText"></textarea>
+<input type="file" id="replyFile">
+<button id="sendReplyButton" onclick="sendReply(${day})">send</button>
+</div>
 
 <pre>
 --------------------
-i love you the most
+chloe replies
+--------------------
 </pre>
+<div id="replyList"></div>
 `;
-
   document.getElementById("popup").classList.remove("hidden");
+  loadReplies(day);
 }
 
-function closePopup() {
-  document.getElementById("popup").classList.add("hidden");
-}
+function closePopup(){document.getElementById("popup").classList.add("hidden");}
 
-function checkArrival() {
-  if (daysRemaining() <= 0) {
-    launchConfetti();
+async function sendReply(day){
+  const text = document.getElementById("replyText").value;
+  const fileInput = document.getElementById("replyFile");
+  const id = Date.now().toString();
+  if(fileInput.files.length>0){
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onloadend = async ()=>{
+      await setDoc(doc(db,"days",String(day),"replies",id),{audio:reader.result,time:Date.now()});
+      fileInput.value="";
+    };
+    reader.readAsDataURL(file);
+  } else if(text.trim()!==""){
+    await setDoc(doc(db,"days",String(day),"replies",id),{text:text,time:Date.now()});
+    document.getElementById("replyText").value="";
   }
 }
 
-function launchConfetti() {
-  const canvas = document.getElementById("confetti");
-  const ctx = canvas.getContext("2d");
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let pieces = [];
-  for (let i = 0; i < 150; i++) {
-    pieces.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: 5 + Math.random() * 5,
-      speed: 2 + Math.random() * 3
+function loadReplies(day){
+  const repliesRef = collection(db,"days",String(day),"replies");
+  onSnapshot(repliesRef,(snapshot)=>{
+    const list = document.getElementById("replyList"); list.innerHTML="";
+    snapshot.forEach(doc=>{
+      const r=doc.data(); let html="";
+      if(r.text){html+=`<p>${r.text}</p><small>${new Date(r.time).toLocaleString()}</small>`;}
+      if(r.audio){html+=`<audio controls><source src="${r.audio}"></audio><small>${new Date(r.time).toLocaleString()}</small>`;}
+      const div=document.createElement("div"); div.className="reply"; div.innerHTML=html;
+      list.appendChild(div);
     });
-  }
+  });
+}
 
-  function update() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pieces.forEach(p => {
-      ctx.fillRect(p.x, p.y, p.size, p.size);
-      p.y += p.speed;
-      if (p.y > canvas.height) p.y = 0;
-    });
-    requestAnimationFrame(update);
-  }
-
+function launchConfetti(){
+  const canvas=document.getElementById("confetti");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  let pieces=[];
+  for(let i=0;i<150;i++){pieces.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:5+Math.random()*5,speed:2+Math.random()*3});}
+  function update(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(p=>{ctx.fillRect(p.x,p.y,p.size,p.size);p.y+=p.speed;if(p.y>canvas.height)p.y=0;});requestAnimationFrame(update);}
   update();
 }
 
-function updateHeaderCountdown() {
+function updateHeaderCountdown(){
   const header = document.getElementById("header");
-  const now = new Date();
-  const diff = arrival - now;
-
-  if (diff <= 0) {
-    header.textContent = `
--------------------------------
- LOVE TRANSMISSION SYSTEM v1.0
--------------------------------
-
-0 days 0 hours 0 minutes
-`;
-    return;
-  }
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-  header.textContent = `
--------------------------------
- LOVE TRANSMISSION SYSTEM v1.0
--------------------------------
-
-${days} days ${hours} hours ${minutes} minutes
-`;
+  const diff = arrival - new Date();
+  if(diff<=0){header.textContent=`\n-------------------------------\n LOVE TRANSMISSION SYSTEM v1.0\n-------------------------------\n\n0 days 0 hours 0 minutes\n`;return;}
+  const days=Math.floor(diff/(1000*60*60*24));
+  const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const minutes=Math.floor((diff%(1000*60*60))/(1000*60));
+  header.textContent=`\n-------------------------------\n LOVE TRANSMISSION SYSTEM v1.0\n-------------------------------\n\n${days} days ${hours} hours ${minutes} minutes\n`;
 }
 
 updateHeaderCountdown();
-setInterval(updateHeaderCountdown, 60000);
-
+setInterval(updateHeaderCountdown,60000);
 buildGrid();
-checkArrival();
+
+window.closePopup = closePopup
+window.openMessage = openMessage
+window.sendReply = sendReply
