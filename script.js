@@ -156,6 +156,20 @@ function updateHeaderCountdown(){
   header.textContent=`\n-------------------------------\n LOVE TRANSMISSION SYSTEM v1.0\n-------------------------------\n\n${days} days ${hours} hours ${minutes} minutes\n`;
 }
 
+function showTransmission(){
+  const key="transmissionSeen";
+  if(!localStorage.getItem(key)){
+    document.getElementById("specialTransmission").classList.remove("hidden");
+  }
+}
+
+function closeTransmission(){
+  localStorage.setItem("transmissionSeen","yes");
+  document.getElementById("specialTransmission").classList.add("hidden");
+}
+
+showTransmission();
+
 updateHeaderCountdown();
 setInterval(updateHeaderCountdown,60000);
 buildGrid();
@@ -163,3 +177,4 @@ buildGrid();
 window.closePopup = closePopup
 window.openMessage = openMessage
 window.sendReply = sendReply
+window.closeTransmission=closeTransmission;
