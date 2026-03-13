@@ -24,6 +24,7 @@ body{
 
 #popupContent{overflow-y:auto;text-align:left;font-size:14px;line-height:1.5;}
 #popupContent img{display:block;margin:0 auto 15px auto;max-height:150px;object-fit:contain;border:1px solid #000;box-shadow:2px 2px 0 black;}
+@media (min-width:1000px){#popupContent img{max-height:260px;}}
 
 textarea{width:100%;max-width:95%;box-sizing:border-box;height:70px;font-family:"Courier New",monospace;border:2px solid black;box-shadow:3px 3px 0 black;padding:5px;margin-bottom:0;resize:vertical;overflow-wrap:break-word;white-space:pre-wrap;}
 
