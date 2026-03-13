@@ -59,10 +59,7 @@ button{font-family:"Courier New",monospace;border:2px solid black;background:#ff
   box-shadow:6px 6px 0 black;
   padding:20px;
   text-align:center;
-  z-index:2000;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+  z-index:9999;
 }
 
 .hidden{display:none !important;}
