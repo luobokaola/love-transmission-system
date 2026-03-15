@@ -42,8 +42,8 @@ const messages = {
     en: "Good morning, Chloe, I love you more than anything. As I’m recording this message, I’m sitting in our favorite cage. I finally got a good, long sleep today and I feel great. I hope you’re enjoying a nice day in Suzhou. I still love remembering our trips around China, all the things we’ve experienced together, and all those moments when we couldn’t stop laughing, and I know that in the future we have so many more trips around the world ahead of us. Only 18 days left, well, actually 17 and a little bit. I’m looking forward to your hug when I arrive more than anything else. I love you so, so, so much, your koala husband Rob."
   },
   17: {
-    audio: "audio/18.m4a",
-    img: "images/18.jpg",
+    audio: "audio/17.m4a",
+    img: "images/17.jpg",
     cz: "Milá Chloe bb, na světě není, co by se vyrovnalo mé lásce k tobě. Jsem strašně rád, že jsi moje přítelkyně (ženuška) ale zároveň i nejlepší kamarádka. Dneska má v Singapuru pršet, tak snad mě to donutí dokončit úkoly, co mám. Doufám, že ty máš hezký den a že ses hezky vyspinkala. Nejvíc se dneska ale stejně těším na hovor s tebou, jako každý den. Jsem rozhodně ten nejšťastnější kluk na světě, mám tu nejkrásnější, nejmilejší a nejchytřejší ženu... Už to je jen míň než 17 dní, chybí mi sledování seriálu, hraní overcooked v jedné posteli vedle sebe. Moc mi chybíš a moc moc moc tě miluju, tvůj koalí manžel Rob.",
     en: "Dear Chloe bb, there’s nothing in the world that compares to my love for you. I’m so happy that you’re my girlfriend (wifey) but also my best friend. It’s supposed to rain in Singapore today, so hopefully that will force me to finish my assignments. I hope you’re having a nice day and that you slept well. But what I’m looking forward to most today is talking to you, just like every day. I’m definitely the happiest guy in the world, I have the most beautiful, sweetest, and smartest wifey… It’s less than 17 days now, and I miss watching series and playing Overcooked in the same bed next to each other. I miss you so much and I love you so, so, so much, your koala husband Rob."  
   },
